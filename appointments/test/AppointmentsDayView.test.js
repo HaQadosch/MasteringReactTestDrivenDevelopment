@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactTestUtils from 'react-dom/test-utils'
 
-import { Appointment, AppointmentsDayView } from '../src/Appointment'
+import { Appointment, AppointmentsDayView } from '../src/AppointmentsDayView'
 
 
 describe('Appointment', () => {
