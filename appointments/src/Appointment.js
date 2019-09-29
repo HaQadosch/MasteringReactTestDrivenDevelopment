@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export const Appointment = ({ customer: { firstName } }) => {
   return (
@@ -9,11 +9,30 @@ export const Appointment = ({ customer: { firstName } }) => {
 }
 
 const appointmentTimeOfDay = startsAt => {
-  const [ h, m ] = new Date(startsAt).toTimeString().split(':')
+  const [h, m] = new Date(startsAt).toTimeString().split(':')
   return `${ h }:${ m }`
 }
-export const AppointmentsDayView = ({ appointments }) => <div id='appointmentsDayView'>
-  <ol>{ appointments.map(({ startsAt }) => <li key={ startsAt } >{
-    appointmentTimeOfDay(startsAt)
-  }</li>) }</ol>
-</div>
+export const AppointmentsDayView = ({ appointments }) => {
+  const [selectAppt, setSelectAppt] = useState(0)
+
+  const handleApptBtnClick = index => () => {
+    setSelectAppt(index)
+  }
+
+  return (
+    <div id='appointmentsDayView'>
+      <ol>
+        { appointments.map(({ startsAt }, i) => (
+          <li key={ i } >
+            <button type='button' onClick={ handleApptBtnClick(i) }>{ appointmentTimeOfDay(startsAt) }</button>
+          </li>
+        ))
+        }
+      </ol>
+      { appointments.length === 0
+        ? <p>There are no appointment scheduled today.</p>
+        : <Appointment { ...appointments[selectAppt] } />
+      }
+    </div>
+  )
+}
