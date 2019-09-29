@@ -6,6 +6,15 @@
   "scripts": {
     "test": "jest"
   },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HaQadosch/MasteringReactTestDrivenDevelopment.git"
