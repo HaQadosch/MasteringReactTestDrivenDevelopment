@@ -12,6 +12,7 @@
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/node_modules/**",
+      "!**/coverage/**",
       "!**/vendor/**"
     ]
   },

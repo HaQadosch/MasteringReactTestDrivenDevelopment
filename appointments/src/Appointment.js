@@ -1,9 +1,9 @@
 import React from 'react'
 
-export const Appointment = () => {
+export const Appointment = ({ customer: { firstName } }) => {
   return (
     <div>
-      Ashley
+      { firstName }
     </div>
   )
 }
