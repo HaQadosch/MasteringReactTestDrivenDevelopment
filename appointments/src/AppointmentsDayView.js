@@ -15,7 +15,7 @@ export const Appointment = ({
   return (
     <section id='appointmentView'>
       <h3>
-        Today's appointment at { appointmentTimeOfDay(startsAt) }
+        Today’s appointment at { appointmentTimeOfDay(startsAt) }
       </h3>
       <table>
         <tbody>
@@ -67,7 +67,7 @@ export const AppointmentsDayView = ({ appointments }) => {
         }
       </ol>
       { appointments.length === 0
-        ? <p>There are no appointment scheduled today.</p>
+        ? <p>There are no appointments scheduled for today.</p>
         : <Appointment { ...appointments[selectAppt] } />
       }
     </article>
