@@ -7,6 +7,11 @@ describe('CustomerForm ', () => {
   let container
   const form = id => container.querySelector(`form#${ id }`)
 
+  const expectTextField = field => {
+    expect(field).not.toBeNull()
+    expect(field.tagName).toEqual('INPUT')
+    expect(field.type).toEqual('text')
+  }
 
   beforeEach(() => {
     ({ render, container } = createContainer())
@@ -16,5 +21,12 @@ describe('CustomerForm ', () => {
     render(<CustomerForm />)
 
     expect(form('customer')).not.toBeNull()
+  });
+
+  it('should render the name field as a text box', () => {
+    render(<CustomerForm />)
+
+    const field = form('customer').elements.firstName
+    expectTextField(field)
   });
 });
