@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import produce from 'immer'
 
 export const CustomerForm = ({ firstName, lastName, phoneNumber, onSubmit }) => {
-  const [customer, setCustomer] = useState({ firstName })
+  const [customer, setCustomer] = useState({ firstName, lastName, phoneNumber })
 
   const handleInputOnChange = ({ target: { name, value } }) => {
     setCustomer(customer => produce(customer, draft => { draft[name] = value }))
@@ -16,6 +16,7 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSubmit }) => 
       <input type='text' id='lastName' name='lastName' onChange={handleInputOnChange} value={lastName} />
       <label htmlFor='phoneNumber' >Phone Number</label>
       <input type='text' id='phoneNumber' name='phoneNumber' onChange={handleInputOnChange} value={phoneNumber} />
+      <input type='submit' value='Add' />
     </form>
   )
 }

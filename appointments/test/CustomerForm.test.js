@@ -99,4 +99,10 @@ describe('CustomerForm ', () => {
     itShouldAssignAnIdThatMatchesTheLabelIdToTheField(getPhoneNumberField, 'phoneNumber')
     itShouldSaveTheCurrentValueWhenSubmitted(getPhoneNumberField, 'phoneNumber')
   })
+
+  it('should has a submit button', () => {
+    render(<CustomerForm />)
+    const submitButton = container.querySelector('input[type="submit"]')
+    expect(submitButton).not.toBeNull()
+  })
 })
