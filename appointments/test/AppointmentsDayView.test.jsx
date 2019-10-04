@@ -44,7 +44,7 @@ describe('AppointmentsDayView', () => {
   it('should render a div with the right ID', () => {
     render(<AppointmentsDayView appointments={[]} />)
 
-    expect(container.querySelector('div#appointmentsDayView')).not.toBeNull()
+    expect(container.querySelector('article#appointmentsDayView')).not.toBeNull()
   })
 
   it('should render multiple appointments', () => {
@@ -64,7 +64,7 @@ describe('AppointmentsDayView', () => {
 
   it('should initially show a message saying there is no appointments today', () => {
     render(<AppointmentsDayView appointments={[]} />)
-    expect(container.textContent).toMatch('There are no appointment scheduled today.')
+    expect(container.textContent).toMatch('There are no appointments scheduled for today.')
   })
 
   it('should select the first appointment by default', () => {

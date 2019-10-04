@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 const appointmentTimeOfDay = startsAt => {
   const [h, m] = new Date(startsAt).toTimeString().split(':')
-  return `${ h }:${ m }`
+  return `${h}:${m}`
 }
 
 export const Appointment = ({
@@ -21,7 +21,7 @@ export const Appointment = ({
         <tbody>
           <tr>
             <td>Customer</td>
-            <td>{ `${ firstName } ${ lastName }` }</td>
+            <td>{ `${firstName} ${lastName}` }</td>
           </tr>
           <tr>
             <td>Phone number</td>
@@ -56,11 +56,11 @@ export const AppointmentsDayView = ({ appointments }) => {
     <article id='appointmentsDayView'>
       <ol>
         { appointments.map(({ startsAt }, i) => (
-          <li key={ startsAt } >
+          <li key={startsAt} >
             <button
               type='button'
-              onClick={ handleApptBtnClick(i) }
-              className={ i === selectAppt ? 'toggled' : '' }
+              onClick={handleApptBtnClick(i)}
+              className={i === selectAppt ? 'toggled' : ''}
             >{ appointmentTimeOfDay(startsAt) }</button>
           </li>
         ))
@@ -68,7 +68,7 @@ export const AppointmentsDayView = ({ appointments }) => {
       </ol>
       { appointments.length === 0
         ? <p>There are no appointments scheduled for today.</p>
-        : <Appointment { ...appointments[selectAppt] } />
+        : <Appointment {...appointments[selectAppt]} />
       }
     </article>
   )
