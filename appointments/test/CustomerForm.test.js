@@ -14,9 +14,8 @@ describe('CustomerForm ', () => {
     expect(field.type).toEqual('text')
   }
 
-  const firstNameField = () => form('customer').elements.firstName
-
   const labelFor = formElt => container.querySelector(`label[for="${formElt}"]`)
+  const selectFieldWithName = name => form('customer').elements[name]
 
   beforeEach(() => {
     ({ render, container } = createContainer())
@@ -27,36 +26,77 @@ describe('CustomerForm ', () => {
     expect(form('customer')).not.toBeNull()
   })
 
-  it('should render the name field as a text box', () => {
-    render(<CustomerForm />)
-    expectTextField(firstNameField())
-  })
-
-  it('should include the existing value for the first name', () => {
-    render(<CustomerForm firstName={'Ashley'} />)
-    expect(firstNameField().value).toEqual('Ashley')
-  })
-
-  it('should render a label for the first name field', () => {
-    render(<CustomerForm />)
-    expect(labelFor('firstName')).not.toBeNull()
-    expect(labelFor('firstName').textContent).toEqual('First Name')
-  })
-
-  it('should assign an id that matches the label id to the first name field', () => {
-    render(<CustomerForm />)
-    expect(firstNameField().id).toEqual('firstName')
-  })
-
-  it('should save existing first name when submitted', async () => {
-    expect.hasAssertions()
-    render(<CustomerForm
-      firstName='Ashley'
-      onSubmit={({ firstName }) => expect(firstName).toEqual('Jamie')}
-    />)
-    await ReactTestUtils.Simulate.change(firstNameField(), {
-      target: { value: 'Jamie' }
+  const itShouldRenderAsATextBox = field => {
+    it('should render as a text box', () => {
+      render(<CustomerForm />)
+      expectTextField(field())
     })
-    await ReactTestUtils.Simulate.submit(form('customer'))
+  }
+
+  const itShouldIncludeTheExistingValue = (field, name) => {
+    it('should include the existing value', () => {
+      render(<CustomerForm {...{ [name]: 'value' }} />)
+      expect(field().value).toEqual('value')
+    })
+  }
+
+  const itShouldRenderALabelField = (name, textContent) => {
+    it('should render a label field', () => {
+      render(<CustomerForm {...{ [name]: 'value' }} />)
+      expect(labelFor(name)).not.toBeNull()
+      expect(labelFor(name).textContent).toEqual(textContent)
+    })
+  }
+
+  const itShouldAssignAnIdThatMatchesTheLabelIdToTheField = (field, name) => {
+    it('should assign an id that matches the label id to the field', () => {
+      render(<CustomerForm />)
+      expect(field().id).toEqual(name)
+    })
+  }
+
+  const itShouldSaveTheCurrentValueWhenSubmitted = (field, name) => {
+    const value = 'newValueOnChange'
+    it('should save the current value when submitted', async () => {
+      expect.hasAssertions()
+      render(<CustomerForm {...{ [name]: 'initValue' }}
+        firstName='Ashley'
+        onSubmit={props => expect(props[name]).toEqual(value)}
+      />)
+      await ReactTestUtils.Simulate.change(field(), {
+        target: { value, name }
+      })
+      await ReactTestUtils.Simulate.submit(form('customer'))
+    })
+  }
+
+  describe('first name field', () => {
+    const getFirstNameField = () => selectFieldWithName('firstName')
+
+    itShouldRenderAsATextBox(getFirstNameField)
+    itShouldIncludeTheExistingValue(getFirstNameField, 'firstName')
+    itShouldRenderALabelField('firstName', 'First Name')
+    itShouldAssignAnIdThatMatchesTheLabelIdToTheField(getFirstNameField, 'firstName')
+    itShouldSaveTheCurrentValueWhenSubmitted(getFirstNameField, 'firstName')
+  })
+
+  describe('last name field', () => {
+    const getLastNameField = () => selectFieldWithName('lastName')
+
+    itShouldRenderAsATextBox(getLastNameField)
+    itShouldIncludeTheExistingValue(getLastNameField, 'lastName')
+    itShouldRenderALabelField('lastName', 'Last Name')
+    itShouldAssignAnIdThatMatchesTheLabelIdToTheField(getLastNameField, 'lastName')
+    itShouldSaveTheCurrentValueWhenSubmitted(getLastNameField, 'lastName')
+  })
+
+  describe('phone number field', () => {
+    const getPhoneNumberField = () => selectFieldWithName('phoneNumber')
+
+    itShouldRenderAsATextBox(getPhoneNumberField)
+    itShouldIncludeTheExistingValue(getPhoneNumberField, 'phoneNumber')
+    itShouldRenderALabelField('phoneNumber', 'Phone Number')
+    itShouldAssignAnIdThatMatchesTheLabelIdToTheField(getPhoneNumberField, 'phoneNumber')
+    itShouldSaveTheCurrentValueWhenSubmitted(getPhoneNumberField, 'phoneNumber')
   })
 })
