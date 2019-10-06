@@ -24,5 +24,20 @@ describe('AppointmentForm', () => {
       expect(getFieldWithName('service')).not.toBeNull()
       expect(getFieldWithName('service').tagName).toEqual('SELECT')
     })
+
+    it('should initially have a blank value chosen', () => {
+      render(<AppointmentForm />)
+      const firstNode = getFieldWithName('service').childNodes[0]
+      expect(firstNode.value).toEqual('')
+      expect(firstNode.selected).toBeTruthy()
+    })
+
+    it('should list all the salon services', () => {
+      const selectableServices = ['Cut', 'Blow-dry']
+      render(<AppointmentForm selectableServices={selectableServices} />)
+      const optionNodes = Array.from(getFieldWithName('service').childNodes)
+      const renderServices = optionNodes.map(({ textContent }) => textContent)
+      expect(renderServices).toEqual(expect.arrayContaining(selectableServices))
+    })
   })
 })
