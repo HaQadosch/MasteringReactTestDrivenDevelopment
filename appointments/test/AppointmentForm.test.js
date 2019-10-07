@@ -19,6 +19,11 @@ describe('AppointmentForm', () => {
   })
 
   describe('service field', () => {
+    const findOption = dropDownNode => {
+      const options = Array.from(dropDownNode.childNodes)
+      return text => options.find(({ textContent }) => textContent === text)
+    }
+
     it('should render as a select box', () => {
       render(<AppointmentForm />)
       expect(getFieldWithName('service')).not.toBeNull()
@@ -38,6 +43,13 @@ describe('AppointmentForm', () => {
       const optionNodes = Array.from(getFieldWithName('service').childNodes)
       const renderServices = optionNodes.map(({ textContent }) => textContent)
       expect(renderServices).toEqual(expect.arrayContaining(selectableServices))
+    })
+
+    it('should preselect the value passed as prop', () => {
+      const services = ['Cut', 'Blow-dry']
+      render(<AppointmentForm selectableServices={services} service='Cut' />)
+      const option = findOption(getFieldWithName('service'))('Cut')
+      expect(option.selected).toBeTruthy()
     })
   })
 })
