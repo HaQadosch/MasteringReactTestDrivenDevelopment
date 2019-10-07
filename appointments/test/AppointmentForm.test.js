@@ -1,6 +1,7 @@
 import React from 'react'
 import { createContainer } from './domManipulators'
 import { AppointmentForm } from '../src/AppointmentForm'
+import ReactTestUtils from 'react-dom/test-utils'
 
 describe('AppointmentForm', () => {
   let render
@@ -12,6 +13,7 @@ describe('AppointmentForm', () => {
 
   const form = id => container.querySelector(`form#${id}`)
   const getFieldWithName = name => form('appointment').elements[name]
+  const labelFor = formElt => container.querySelector(`label[for="${formElt}"]`)
 
   it('should render a form', () => {
     render(<AppointmentForm />)
@@ -50,6 +52,44 @@ describe('AppointmentForm', () => {
       render(<AppointmentForm selectableServices={services} service='Cut' />)
       const option = findOption(getFieldWithName('service'))('Cut')
       expect(option.selected).toBeTruthy()
+    })
+
+    it('should render a label', () => {
+      render(<AppointmentForm />)
+      expect(labelFor('service')).not.toBeNull()
+      expect(labelFor('service').textContent).toEqual('Salon Service')
+    })
+
+    it('should assign an id that matches the label id', () => {
+      render(<AppointmentForm />)
+      expect(getFieldWithName('service').id).toEqual('service')
+    })
+
+    it('should save existing value when submitted', async () => {
+      expect.hasAssertions()
+      render(
+        <AppointmentForm
+          service='Cut'
+          onSubmit={({ service }) => expect(service).toEqual('Cut')}
+        />
+      )
+      await ReactTestUtils.Simulate.submit(form('appointment'))
+    })
+
+    it('should saves new value when submitted', async () => {
+      expect.hasAssertions()
+      render(
+        <AppointmentForm
+          service='Cut'
+          onSubmit={({ service }) => expect(service).toEqual('Blow-dry')}
+        />
+      )
+      await ReactTestUtils.Simulate.change(
+        getFieldWithName('service'),
+        {
+          target: { value: 'Blow-dry', name: 'service' }
+        })
+      await ReactTestUtils.Simulate.submit(form('appointment'))
     })
   })
 })
