@@ -101,12 +101,18 @@ describe('AppointmentForm', () => {
     })
 
     it('should render a time slot for every half an hour between open and close time', () => {
-      render(<AppointmentForm opensAt={9} closesAt={11} />)
+      render(<AppointmentForm openingTime={9} closingTime={11} />)
       const timesOfDay = table('time-slots').querySelectorAll('tbody >* th')
       expect(timesOfDay).toHaveLength(4)
       expect(timesOfDay[0].textContent).toEqual('09:00')
       expect(timesOfDay[1].textContent).toEqual('09:30')
       expect(timesOfDay[3].textContent).toEqual('10:30')
+    })
+
+    it('should render an empty cell at the start of he header row', () => {
+      render(<AppointmentForm />)
+      const headerRow = table('time-slots').querySelector('thead > tr')
+      expect(headerRow.firstChild.textContent).toEqual('')
     })
   })
 })
