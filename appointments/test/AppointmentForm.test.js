@@ -114,5 +114,15 @@ describe('AppointmentForm', () => {
       const headerRow = table('time-slots').querySelector('thead > tr')
       expect(headerRow.firstChild.textContent).toEqual('')
     })
+
+    it('should render a week of available dates', () => {
+      const today = new Date(2019, 9, 13)
+      render(<AppointmentForm today={today} />)
+      const dates = table('time-slots').querySelectorAll('thead >* th:not(:first-child)')
+      expect(dates).toHaveLength(7)
+      expect(dates[0].textContent).toEqual('Sun 13')
+      expect(dates[1].textContent).toEqual('Mon 14')
+      expect(dates[6].textContent).toEqual('Sat 19')
+    })
   })
 })
