@@ -124,5 +124,18 @@ describe('AppointmentForm', () => {
       expect(dates[1].textContent).toEqual('Mon 14')
       expect(dates[6].textContent).toEqual('Sat 19')
     })
+
+    it('should render a radio button for each time slot', () => {
+      const today = new Date()
+      const availableTimeSlots = [
+        { openingTime: today.setHours(9, 0, 0, 0) },
+        { openingTime: today.setHours(9, 30, 0, 0) }
+      ]
+      render(<AppointmentForm today={today} availableTimeSlots={availableTimeSlots} />)
+
+      const tds = table('time-slots').querySelectorAll('td')
+      expect(tds[0].querySelector('input[type="radio"]')).not.toBeNull()
+      expect(tds[7].querySelector('input[type="radio"]')).not.toBeNull()
+    })
   })
 })
