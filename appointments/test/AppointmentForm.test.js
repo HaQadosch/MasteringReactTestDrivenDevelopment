@@ -95,6 +95,8 @@ describe('AppointmentForm', () => {
 
   describe('time slot table', () => {
     const table = id => container.querySelector(`table#${id}`)
+    const openingTimeField = index => container.querySelectorAll('input[name="openingTime"]')[index]
+
     it('should render a table for time slots', () => {
       render(<AppointmentForm />)
       expect(table('time-slots')).not.toBeNull()
@@ -136,6 +138,23 @@ describe('AppointmentForm', () => {
       const tds = table('time-slots').querySelectorAll('td')
       expect(tds[0].querySelector('input[type="radio"]')).not.toBeNull()
       expect(tds[7].querySelector('input[type="radio"]')).not.toBeNull()
+    })
+
+    it('should not render radio buttons for unavailable timeslots', () => {
+      render(<AppointmentForm availableTimeSlots={[]} />)
+      const timesOfDay = table('time-slots').querySelectorAll('input')
+      expect(timesOfDay).toHaveLength(0)
+    })
+
+    it('should set radio button values to the index of the corresponding appointment', () => {
+      const today = new Date()
+      const availableTimeSlots = [
+        { openingTime: today.setHours(9, 0, 0, 0) },
+        { openingTime: today.setHours(9, 30, 0, 0) }
+      ]
+      render(<AppointmentForm today={today} availableTimeSlots={availableTimeSlots} />)
+      expect(openingTimeField(0).value).toEqual(availableTimeSlots[0].openingTime.toString())
+      expect(openingTimeField(1).value).toEqual(availableTimeSlots[1].openingTime.toString())
     })
   })
 })

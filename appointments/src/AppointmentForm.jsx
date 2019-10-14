@@ -20,7 +20,20 @@ const weeklyDatesValue = startDate => {
   return timeIncrement(7, midnight, incrementHr)
 }
 
-const TimeSlotTable = ({ openingTime, closingTime, today = new Date() }) => {
+const mergeDateAndTime = (date, timeSlot) => {
+  const time = new Date(timeSlot)
+  return new Date(date).setHours(time.getHours(), time.getMinutes(), time.getSeconds(), time.getMilliseconds())
+}
+
+const RadionButtonIfAvailable = ({ availableTimeSlots, date, timeSlot }) => {
+  const openingTime = mergeDateAndTime(date, timeSlot)
+  if (availableTimeSlots.some(availableTimeSlot => availableTimeSlot.openingTime === openingTime)) {
+    return <input type='radio' name='openingTime' value={openingTime} />
+  }
+  return null
+}
+
+const TimeSlotTable = ({ openingTime, closingTime, today = new Date(), availableTimeSlots = [] }) => {
   const timeSlots = dailyTimeSlots(openingTime, closingTime)
 
   const dates = weeklyDatesValue(today)
@@ -45,7 +58,7 @@ const TimeSlotTable = ({ openingTime, closingTime, today = new Date() }) => {
             <th>{toTimeValue(timeSlot)}</th>
             {dates.map(date => (
               <td key={date}>
-                <input type='radio' name='timeslot' id='timeslot' />
+                <RadionButtonIfAvailable availableTimeSlots={availableTimeSlots} date={date} timeSlot={timeSlot} />
               </td>
             ))}
           </tr>
@@ -61,7 +74,8 @@ export const AppointmentForm = ({
   onSubmit,
   openingTime = 9,
   closingTime = 19,
-  today
+  today,
+  availableTimeSlots = []
 }) => {
   const [service_, setService_] = useState(service)
 
@@ -81,6 +95,6 @@ export const AppointmentForm = ({
         <option key={s}>{s}</option>
       )}
     </select>
-    <TimeSlotTable openingTime={openingTime} closingTime={closingTime} today={today} />
+    <TimeSlotTable openingTime={openingTime} closingTime={closingTime} today={today} availableTimeSlots={availableTimeSlots} />
   </form>
 }
