@@ -3,6 +3,41 @@ import ReactTestUtils from 'react-dom/test-utils'
 import { createContainer } from './domManipulators'
 import { CustomerForm } from '../src/CustomerForm'
 
+const singleArgumentSpy = () => {
+  let receivedArgument
+
+  return {
+    fn: arg => { receivedArgument = arg },
+    receivedArgument: () => receivedArgument
+  }
+}
+
+const spy = () => {
+  let receivedArguments
+
+  return {
+    fn: (...args) => { receivedArguments = args },
+    receivedArguments: () => receivedArguments,
+    receivedArgument: n => receivedArguments[n]
+  }
+}
+
+expect.extend({
+  toHaveBeenCalled (recieved) {
+    if (recieved.receivedArguments() === undefined) {
+      return {
+        pass: false,
+        message: () => 'Spy was not called'
+      }
+    } else {
+      return {
+        pass: true,
+        message: () => 'Spy was called'
+      }
+    }
+  }
+})
+
 describe('CustomerForm ', () => {
   let render
   let container
@@ -74,15 +109,17 @@ describe('CustomerForm ', () => {
 
   const itSubmitsExistingValue = fieldName => {
     it('should save existing value when submitted', async () => {
-      let submitArg
+      const submitSpy = spy()
 
       render(<CustomerForm {...{ [fieldName]: 'value' }}
-        onSubmit={customer => { submitArg = customer }}
+        onSubmit={submitSpy.fn}
       />)
 
       ReactTestUtils.Simulate.submit(form('customer'))
-      expect(submitArg).toBeDefined()
-      expect(submitArg[fieldName]).toEqual('value')
+
+      expect(submitSpy).toHaveBeenCalled()
+      expect(submitSpy.receivedArguments()).toBeDefined()
+      expect(submitSpy.receivedArgument(0)[fieldName]).toEqual('value')
     })
   }
 
