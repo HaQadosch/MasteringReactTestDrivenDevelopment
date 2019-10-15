@@ -59,10 +59,12 @@ describe('CustomerForm ', () => {
     const value = 'newValueOnChange'
     it('should save the current value when submitted', async () => {
       expect.hasAssertions()
+
       render(<CustomerForm {...{ [name]: 'initValue' }}
         firstName='Ashley'
         onSubmit={props => expect(props[name]).toEqual(value)}
       />)
+
       await ReactTestUtils.Simulate.change(field(), {
         target: { value, name }
       })
@@ -70,10 +72,25 @@ describe('CustomerForm ', () => {
     })
   }
 
+  const itSubmitsExistingValue = fieldName => {
+    it('should save existing value when submitted', async () => {
+      let submitArg
+
+      render(<CustomerForm {...{ [fieldName]: 'value' }}
+        onSubmit={customer => { submitArg = customer }}
+      />)
+
+      ReactTestUtils.Simulate.submit(form('customer'))
+      expect(submitArg).toBeDefined()
+      expect(submitArg[fieldName]).toEqual('value')
+    })
+  }
+
   describe('first name field', () => {
     const getFirstNameField = () => selectFieldWithName('firstName')
 
     itShouldRenderAsATextBox(getFirstNameField)
+    itSubmitsExistingValue('firstName')
     itShouldIncludeTheExistingValue(getFirstNameField, 'firstName')
     itShouldRenderALabelField('firstName', 'First Name')
     itShouldAssignAnIdThatMatchesTheLabelIdToTheField(getFirstNameField, 'firstName')
