@@ -159,4 +159,8 @@ describe('CustomerForm ', () => {
     const submitButton = container.querySelector('input[type="submit"]')
     expect(submitButton).not.toBeNull()
   })
+
+  it('should call fetch with the right properties when submitting data', async () => {
+
+  })
 })
