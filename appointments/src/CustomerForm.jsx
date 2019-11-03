@@ -1,15 +1,27 @@
 import React, { useState } from 'react'
 import produce from 'immer'
 
-export const CustomerForm = ({ firstName, lastName, phoneNumber, onSubmit }) => {
+export const CustomerForm = ({ firstName, lastName, phoneNumber, onSubmit, fetch = async (url, opts) => {} }) => {
   const [customer, setCustomer] = useState({ firstName, lastName, phoneNumber })
 
   const handleInputOnChange = ({ target: { name, value } }) => {
     setCustomer(customer => produce(customer, draft => { draft[name] = value }))
   }
 
+  const handleSubmit = () => {
+    onSubmit(customer)
+
+    fetch('/customers', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-type': 'application/json'
+      }
+    })
+  }
+
   return (
-    <form action='' id='customer' onSubmit={() => onSubmit(customer)} >
+    <form action='' id='customer' onSubmit={handleSubmit} >
       <label htmlFor='firstName' >First Name</label>
       <input type='text' id='firstName' name='firstName' onChange={handleInputOnChange} value={firstName} />
       <label htmlFor='lastName' >Last Name</label>

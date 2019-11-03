@@ -161,6 +161,17 @@ describe('CustomerForm ', () => {
   })
 
   it('should call fetch with the right properties when submitting data', async () => {
+    const fetchSpy = spy()
+    render(<CustomerForm fetch={fetchSpy.fn} onSubmit={() => {}} />)
+    ReactTestUtils.Simulate.submit(form('customer'))
+    expect(fetchSpy).toHaveBeenCalled()
+    expect(fetchSpy.receivedArgument(0)).toEqual('/customers')
 
+    const fetchOpts = fetchSpy.receivedArgument(1)
+    expect(fetchOpts.method).toEqual('POST')
+    expect(fetchOpts.credentials).toEqual('same-origin')
+    expect(fetchOpts.headers).toEqual({
+      'Content-type': 'application/json'
+    })
   })
 })
