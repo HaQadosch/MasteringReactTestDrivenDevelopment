@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import produce from 'immer'
 
-export const CustomerForm = ({ firstName, lastName, phoneNumber, onSubmit, fetch = async (url, opts) => {} }) => {
+export const CustomerForm = ({ firstName, lastName, phoneNumber, fetch = async (url, opts) => {} }) => {
   const [customer, setCustomer] = useState({ firstName, lastName, phoneNumber })
 
   const handleInputOnChange = ({ target: { name, value } }) => {
@@ -9,14 +9,13 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSubmit, fetch
   }
 
   const handleSubmit = () => {
-    onSubmit(customer)
-
     fetch('/customers', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
         'Content-type': 'application/json'
-      }
+      },
+      body: JSON.stringify(customer)
     })
   }
 

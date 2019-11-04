@@ -93,33 +93,34 @@ describe('CustomerForm ', () => {
   const itShouldSaveTheCurrentValueWhenSubmitted = (field, name) => {
     const value = 'newValueOnChange'
     it('should save the current value when submitted', async () => {
-      expect.hasAssertions()
+      const fetchSpy = spy()
 
       render(<CustomerForm {...{ [name]: 'initValue' }}
-        firstName='Ashley'
-        onSubmit={props => expect(props[name]).toEqual(value)}
+        fetch={fetchSpy.fn}
       />)
 
-      await ReactTestUtils.Simulate.change(field(), {
+      ReactTestUtils.Simulate.change(field(), {
         target: { value, name }
       })
-      await ReactTestUtils.Simulate.submit(form('customer'))
+      ReactTestUtils.Simulate.submit(form('customer'))
+
+      const fetchOpts = fetchSpy.receivedArgument(1)
+      expect(JSON.parse(fetchOpts.body)[name]).toEqual('newValueOnChange')
     })
   }
 
   const itSubmitsExistingValue = fieldName => {
     it('should save existing value when submitted', async () => {
-      const submitSpy = spy()
+      const fetchSpy = spy()
 
       render(<CustomerForm {...{ [fieldName]: 'value' }}
-        onSubmit={submitSpy.fn}
+        fetch={fetchSpy.fn}
       />)
 
       ReactTestUtils.Simulate.submit(form('customer'))
 
-      expect(submitSpy).toHaveBeenCalled()
-      expect(submitSpy.receivedArguments()).toBeDefined()
-      expect(submitSpy.receivedArgument(0)[fieldName]).toEqual('value')
+      const fetchOpts = fetchSpy.receivedArgument(1)
+      expect(JSON.parse(fetchOpts.body)[fieldName]).toEqual('value')
     })
   }
 
@@ -162,7 +163,7 @@ describe('CustomerForm ', () => {
 
   it('should call fetch with the right properties when submitting data', async () => {
     const fetchSpy = spy()
-    render(<CustomerForm fetch={fetchSpy.fn} onSubmit={() => {}} />)
+    render(<CustomerForm fetch={fetchSpy.fn} />)
     ReactTestUtils.Simulate.submit(form('customer'))
     expect(fetchSpy).toHaveBeenCalled()
     expect(fetchSpy.receivedArgument(0)).toEqual('/customers')
