@@ -218,4 +218,17 @@ describe('CustomerForm ', () => {
 
     expect(preventDefaultSpy).toHaveBeenCalled()
   })
+
+  it('should render an error message when fetch call fails', async () => {
+    fetchSpy.stubReturnValue({ ok: false })
+
+    render(<CustomerForm />)
+    await act(async () => {
+      ReactTestUtils.Simulate.submit(form('customer'))
+    })
+
+    const errorElt = container.querySelector('.error')
+    expect(errorElt).not.toBeNull()
+    expect(errorElt.textContent).toMatch('error occurred')
+  })
 })
