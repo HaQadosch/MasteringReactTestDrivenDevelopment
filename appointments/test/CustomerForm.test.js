@@ -3,15 +3,6 @@ import ReactTestUtils from 'react-dom/test-utils'
 import { createContainer } from './domManipulators'
 import { CustomerForm } from '../src/CustomerForm'
 
-const singleArgumentSpy = () => {
-  let receivedArgument
-
-  return {
-    fn: arg => { receivedArgument = arg },
-    receivedArgument: () => receivedArgument
-  }
-}
-
 const spy = () => {
   let receivedArguments
 
@@ -39,6 +30,9 @@ expect.extend({
 })
 
 describe('CustomerForm ', () => {
+  const originalFetch = window.fetch
+  let fetchSpy
+
   let render
   let container
   const form = id => container.querySelector(`form#${id}`)
@@ -54,6 +48,12 @@ describe('CustomerForm ', () => {
 
   beforeEach(() => {
     ({ render, container } = createContainer())
+    fetchSpy = spy()
+    window.fetch = fetchSpy.fn
+  })
+
+  afterEach(() => {
+    window.fetch = originalFetch
   })
 
   it('should render a Form', () => {
@@ -93,11 +93,7 @@ describe('CustomerForm ', () => {
   const itShouldSaveTheCurrentValueWhenSubmitted = (field, name) => {
     const value = 'newValueOnChange'
     it('should save the current value when submitted', async () => {
-      const fetchSpy = spy()
-
-      render(<CustomerForm {...{ [name]: 'initValue' }}
-        fetch={fetchSpy.fn}
-      />)
+      render(<CustomerForm {...{ [name]: 'initValue' }} />)
 
       ReactTestUtils.Simulate.change(field(), {
         target: { value, name }
@@ -111,11 +107,7 @@ describe('CustomerForm ', () => {
 
   const itSubmitsExistingValue = fieldName => {
     it('should save existing value when submitted', async () => {
-      const fetchSpy = spy()
-
-      render(<CustomerForm {...{ [fieldName]: 'value' }}
-        fetch={fetchSpy.fn}
-      />)
+      render(<CustomerForm {...{ [fieldName]: 'value' }} />)
 
       ReactTestUtils.Simulate.submit(form('customer'))
 
@@ -162,8 +154,7 @@ describe('CustomerForm ', () => {
   })
 
   it('should call fetch with the right properties when submitting data', async () => {
-    const fetchSpy = spy()
-    render(<CustomerForm fetch={fetchSpy.fn} />)
+    render(<CustomerForm />)
     ReactTestUtils.Simulate.submit(form('customer'))
     expect(fetchSpy).toHaveBeenCalled()
     expect(fetchSpy.receivedArgument(0)).toEqual('/customers')
